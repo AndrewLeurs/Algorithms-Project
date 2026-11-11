@@ -1,5 +1,6 @@
 % Median-of-three pivot selection helper
 % getMedian3Pivot.m
+% Sylvester Reyes 
  
 function [pivotIndex, comps] = getMedian3Pivot(A, low, high, comps)
     % Selects the median value among the first, middle, and last elements.

@@ -1,5 +1,6 @@
 % Script to execute and gather metrics/generate plots 
 % runExperiments.m 
+% Sylvester Reyes 
 
 
 function runExperiments()
@@ -26,11 +27,13 @@ function runExperiments()
     fprintf('\n-------------------------------------------------------------------\n\n');
 
     % ---- Task 1.3: Performance and Pivot Comparisons ----
+    % --- Sylvester Reyes
     runTask1_3();
 
     fprintf('\n-------------------------------------------------------------------\n\n');
 
     % ---- Part 2: Knapsack DP &  Optimal Enumeration ----
+    % --- Sylvester Reyes
     disp('===       Executing Planet Zorb Knapsack Analysis      ===');
     try 
         knapsackDP();
@@ -46,6 +49,8 @@ end
 function runTask1_1()
     % runTask1_1 validates QuickYbridSort across all mandatory edge cases
     % and test distributions.
+    % 
+    % Sylvester Reyes  
     %
     % Iterates through empty arrays, single elements, duplicates, all-equal
     % arrays, sorted arrays, reverse-sorted arrays, and negative mixed
@@ -106,7 +111,93 @@ function runTask1_1()
     end
 
     if allPassed
-        disp('[PASS] All tast 1.1 test categoris passed successfully');
+        disp('[PASS] All tests 1.1 test categoris passed successfully');
+        
+        disp('=== Empty Array Metrics ===');
+        EmptyArr = [];
+        disp('Original Array Test Cases Empty:'); disp(EmptyArr);
+        [testCases, comps, writes] = QuickHybridSort(EmptyArr, 0, 'median3');
+        disp('Array Output K = 0: '); disp(testCases);
+        fprintf('Metrics --> Comparisons: %d | Writes: %d\n', comps, writes);
+        [testCases, comps, writes] = QuickHybridSort(EmptyArr, 8, 'median3');
+        disp('Array Output K = 8: '); disp(testCases);
+        fprintf('Metrics --> Comparisons: %d | Writes: %d\n', comps, writes);
+        [testCases, comps, writes] = QuickHybridSort(EmptyArr, 32, 'median3');
+        disp('Array Output K = 32: '); disp(testCases);
+        fprintf('Metrics --> Comparisons: %d | Writes: %d\n', comps, writes);
+        disp('====================================================');
+
+        disp('=== Single Element Array Metrics ===');
+        SingleArr = [42];
+        disp('Original Array Test Cases Single: '); disp(SingleArr);
+        [testCases, comps, writes] = QuickHybridSort(SingleArr, 0, 'median3');
+        disp('Array Output K = 0: '); disp(testCases);
+        fprintf('Metrics --> Comparisons: %d | Writes: %d\n', comps, writes);
+        [testCases, comps, writes] = QuickHybridSort(SingleArr, 8, 'median3');
+        disp('Array Output K = 8: '); disp(testCases);
+        fprintf('Metrics --> Comparisons: %d | Writes: %d\n', comps, writes);
+        [testCases, comps, writes] = QuickHybridSort(SingleArr, 32, 'median3');
+        disp('Array Output K = 32: '); disp(testCases);
+        fprintf('Metrics --> Comparisons: %d | Writes: %d\n', comps, writes);
+        disp('====================================================');
+
+        disp('=== Duplicate Array Metrics ===');
+        Duplicates = [5, 2, 9, 5, 2, 3, 9, 1];
+        disp('Original Array Test Cases Duplicates:'); disp(Duplicates);
+        [testCases, comps, writes] = QuickHybridSort(Duplicates, 0, 'median3');
+        disp('Array Output K = 0: '); disp(testCases);
+        fprintf('Metrics --> Comparisons: %d | Writes: %d \n', comps, writes);
+        [testCases, comps, writes] = QuickHybridSort(Duplicates, 8, 'median3');
+        disp('Array Output K = 8: '); disp(testCases);
+        fprintf('Metrics --> Comparisons: %d | Writes: %d \n', comps, writes);
+        [testCases, comps, writes] = QuickHybridSort(Duplicates, 32, 'median3');
+        disp('Array Output K = 32: '); disp(testCases);
+        fprintf('Metrics --> Comparisons: %d | Writes: %d \n', comps, writes);
+        disp('====================================================');
+
+        disp('=== All Equal Array Metrics ===');
+        AllEqual = [7, 7, 7, 7, 7];
+        disp('Original Array Test Cases All Equal: '); disp(AllEqual);
+        [testCases, comps, writes] = QuickHybridSort(AllEqual, 0, 'median3');
+        disp('Array Output K = 0: '); disp(testCases);
+        fprintf('Metrics --> Comparisons: %d | Writes: %d\n', comps, writes);
+        [testCases, comps, writes] = QuickHybridSort(AllEqual, 8, 'median3');
+        disp('Array Output K = 8: '); disp(testCases);
+        fprintf('Metrics --> Comparisons: %d | Writes: %d\n', comps, writes);
+        [testCases, comps, writes] = QuickHybridSort(AllEqual, 32, 'median3');
+        disp('Array Output K = 32: '); disp(testCases);
+        fprintf('Metrics --> Comparisons: %d | Writes: %d\n', comps, writes);
+        disp('====================================================');
+
+        disp('=== Already Sorted Array Metrics ===');
+        AlreadySorted = [1, 2, 3, 4, 5, 6, 7, 8];
+        disp('Original Array Test Cases Already Sorted: '); disp(AlreadySorted);
+        [testCases, comps, writes] = QuickHybridSort(AlreadySorted, 0, 'median3');
+        disp('Array Output K = 0: '); disp(testCases);
+        fprintf('Metrics --> Comparisons: %d | Writes: %d\n', comps, writes);
+        [testCases, comps, writes] = QuickHybridSort(AlreadySorted, 8, 'median3');
+        disp('Array Output K = 8: '); disp(testCases);
+        fprintf('Metrics --> Comparisons: %d | Writes: %d\n', comps, writes);
+        [testCases, comps, writes] = QuickHybridSort(AlreadySorted, 32, 'median3');
+        disp('Array Output K = 32: '); disp(testCases);
+        fprintf('Metrics --> Comparisons: %d | Writes: %d\n', comps, writes);
+        disp('====================================================');
+
+        disp('=== Reversed Sorted Array Metrics ===');
+        ReverseSorted = [8, 7, 6, 5, 4, 3, 2, 1];
+        disp('Original Array Test Cases Reversed Sorted: '); disp(ReverseSorted);
+        [testCases, comps, writes] = QuickHybridSort(ReverseSorted, 0, 'median3');
+        disp('Array Output K = 0: '); disp(testCases);
+        fprintf('Metrics --> Comparisons: %d | Writes: %d\n', comps, writes);
+        [testCases, comps, writes] = QuickHybridSort(ReverseSorted, 8, 'median3');
+        disp('Array Output K = 8: '); disp(testCases);
+        fprintf('Metrics --> Comparisons: %d | Writes: %d\n', comps, writes);
+        [testCases, comps, writes] = QuickHybridSort(ReverseSorted, 32, 'median3');
+        disp('Array Output K = 32: '); disp(testCases);
+        fprintf('Metrics --> Comparisons: %d | Writes: %d\n', comps, writes);
+        disp('====================================================');
+
+        
     else
         disp('[FAIL] Some test categories failed. Inspec sorting logic.');
     end
@@ -114,10 +205,17 @@ function runTask1_1()
     % Print Concrete example for input and output deliverables
     disp('--- Example Input and Output Demonstaration ---');
     sampleInput = [-3, 14, -7, 0, 5, -3, 8, -12];
-    [sampleOutput, comps, writes] = QuickHybridSort(sampleInput, 8, 'median3');
+    [sampleOutput, comps, writes] = QuickHybridSort(sampleInput, 0, 'median3');
     disp('Sample Input:'); disp(sampleInput);
+    disp('Sample Output (QuickHybridSort, K = 0, median3):'); disp(sampleOutput);
+    fprintf('Metrics --> Comparisons: %d | Writes: %d\n', comps, writes);
+    [sampleOutput, comps, writes] = QuickHybridSort(sampleInput, 8, 'median3');
     disp('Sample Output (QuickHybridSort, K = 8, median3):'); disp(sampleOutput);
     fprintf('Metrics --> Comparisons: %d | Writes: %d\n', comps, writes);
+    [sampleOutput, comps, writes] = QuickHybridSort(sampleInput, 32, 'median3');
+    disp('Sample Output (QuickHybridSort, K = 32, median3):'); disp(sampleOutput);
+    fprintf('Metrics --> Comparisons: %d | Writes: %d\n', comps, writes);
+    disp('====================================================');
 
 end
 
@@ -209,7 +307,7 @@ function runTask1_3()
     % Smaller Pivot experiment at n = 6000
     disp('-------- Pivot Experiment (n = 6000) --------');
     n_pivot = 6000;
-    pivotConfigs = {'medin3', 0; 'median3', 16; 'random', 0; 'random', 16};
+    pivotConfigs = {'medin3', 0; 'median3', 8; 'median3', 16'; 'median3', 32; 'random', 0; 'random', 8; 'random', 16; 'random', 32};
 
     fprintf('%-10s | %-6s | %-12s | %-12s | %-12s\n', 'Rule', 'K', 'Mean Time(ms)', 'Comparisons', 'Writes');
     fprintf('-------------------------------------------------------------------\n');

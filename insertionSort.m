@@ -1,5 +1,8 @@
 % insertion sort implementation with instrumentation 
 % insertionSort.m 
+% references: https://www.geeksforgeeks.org/dsa/insertion-sort-algorithm/
+% Sylvester Reyes 
+
 function [A, comps, writes] = insertionSort(A, low, high, comps, writes)
     % Sorts subarray from 'low' to 'high' using standard insertion sort.
     %

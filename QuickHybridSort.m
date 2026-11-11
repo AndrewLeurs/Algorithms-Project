@@ -1,5 +1,6 @@
 % Main hybrid sorting driver function 
 % HybridQuick.m sort
+% Sylvester Reyes 
 % implemented QuickHybridSort function to process testing scripts
 
 function [A, comps, writes] = QuickHybridSort(A, K, pivot_rule)

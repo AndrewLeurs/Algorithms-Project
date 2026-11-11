@@ -1,6 +1,7 @@
 % Partition Function 
 % - (Lomuto or Hoare) 
 % Partitiong Comparison(s)
+% Sylvester Reyes 
 % 
 % Lomuto: Uses a single pointer (i) starting before the subarray
 % and a scanning pointer (j) which moves from the left boundary up to the 

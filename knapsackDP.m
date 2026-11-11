@@ -1,5 +1,6 @@
 % bottom-up 0/1 knapsack implementation and traceback logic 
 % knapsackDP.m 
+% Sylvester Reyes 
 
 function [maxScore, optimalSets] = knapsackDP()
     % KnapsackDP solves the Planet Zorb 0/1 problem and enumerates all
