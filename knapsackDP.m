@@ -78,19 +78,15 @@ function backtrack(i, currentW, currentScore, currentItems)
 
     currWeight = weights(i);
     currScoreVal = scores(i);
+    cellVal = DP(i + 1, currentW + 1);
 
-% Checks Option A (Skip) if the table value could have come from skipping
-% tiem (i)
-    if DP(i + 1, currentW + 1) == DP(i, currentW + 1)
+    if cellVal == DP(i, currentW + 1)
         backtrack(i - 1, currentW, currentScore, currentItems);
-    end 
-    
-    % Checks option B (taken) if items fit and table value equals taking item
-    % (i)
-    if currWeight <= currentW 
-        if DP(i + 1, currentW + 1) == (currScoreVal + DP(i, currentW - currWeight + 1))
-            backtrack(i - 1, currentW - currWeight, currentScore + currScoreVal, [currentItems, i]);
-        end
+    end
+    % Checks option B (take) when the item fits and preserves optimality
+    if currWeight <= currentW && cellVal == currScoreVal + DP(i, currentW - currWeight + 1)
+        backtrack(i - 1, currentW - currWeight, currentScore + currScoreVal, ...
+            [currentItems, i]);
     end
 end
 
@@ -101,14 +97,18 @@ backtrack(n, W, 0, []);
 
 % filters out redundant duplicate set representations 
 if ~isempty(optimalSets)
-    optimalSets = unique(cellfun(@num2str, optimalSets, 'UniformOutput', false));
+
+    % converts cell array of vectors to strings for filtering
+    strCells = cellfun(@(c) sprintf('%d', c), optimalSets, 'UniformOutput', false);
+    [~, uniqueIdx] = unique(strCells);
+    optimalSets = optimalSets(uniqueIdx);
+    
     disp('-----       Distinct Optimal Item Sets Found      -----');
 
     % loops through and prints each distinct optimal selection, total
     % weights, and score 
     for idx = 1:length(optimalSets)
-        setStr = optimalSets{idx};
-        itemIndices = str2num(setStr); % standard num
+        itemIndices = optimalSets{idx}; % standard num
         setW = sum(weights(itemIndices));
         fprintf('Solution %d --> Item IDs: [%s] | Total Weight: %d | Total Score: %d\n', ...
             idx, num2str(itemIndices), setW, maxScore);

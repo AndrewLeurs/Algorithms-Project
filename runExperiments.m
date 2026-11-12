@@ -304,6 +304,26 @@ function runTask1_3()
     end
     fprintf('-------------------------------------------------------------------\n\n');
 
+    % --- Comparison Plot of Average Sorting time vs. n ----
+    fig = figure('Name', 'Task 1.3: Algorithm Sorting Time Comparison', 'Color', 'white');
+    n_vals = [resultsSummary.n];
+
+    plot(n_vals, [resultsSummary.meanQuick], '-o', 'LineWidth', 1.5, 'DisplayName', 'Pure Quicksort (K = 0, median3)');
+    hold on;
+    plot(n_vals, [resultsSummary.meanHybrid], '-s', 'LineWidth', 1.5, 'DisplayName', 'QuickHybridSort (K*, median3');
+    plot(n_vals, [resultsSummary.meanInsertion], '-^', 'LineWidth', 1.5, 'DisplayName', 'Pure Insertion Sort');
+    plot(n_vals, [resultsSummary.meanBuiltin], '--d', 'LineWidth', 2.0, 'Color', 'black', 'DisplayName', 'MATLAB Built-in sort()');
+    hold off;
+
+    grid on;
+    xlabel('Input Array Size n (elements)', 'FontSize', 11, 'FontWeight', 'bold');
+    ylabel('Average Sorting Time (ms)', 'FontSize', 11, 'FontWeight', 'bold');
+    title('Task 1.3: Average Sorting Time vs. Input Size n', 'FontSize', 12);
+    legend('Location', 'northwest', 'FontSize', 10);
+
+    % Saves image for report
+    exportgraphics(fig, 'Task1_3_ComparisonPlot.png', 'Resolution', 300);
+
     % Smaller Pivot experiment at n = 6000
     disp('-------- Pivot Experiment (n = 6000) --------');
     n_pivot = 6000;
