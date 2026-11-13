@@ -23,7 +23,7 @@ function [maxScore, optimalSets] = knapsackDP()
     % 17)
 
     weights = [4, 7, 5, 3, 6, 2];
-    scores = [130 220, 160, 100, 190, 70];
+    scores = [130, 220, 160, 100, 190, 70];
     W = 17;
     n = length(weights);
 
@@ -60,11 +60,56 @@ function [maxScore, optimalSets] = knapsackDP()
     maxScore = DP(n + 1, W + 1);
     fprintf('\nMaximum biodiversity Score Achieved: %d\n\n', maxScore);
 
+    % Task 2.3 (one optimal list of item IDs, the total selected weight,
+    % and the total selected score)
+    % Andrew Leurs
+
+    fprintf('Optimal List of Item IDs: ');
+
+    OptimalList = []; % Stores items in array
+    curr_i = n + 1;
+    curr_w = W + 1;
+    totalWeight = 0;
+    totalScore = 0;
+    while true
+        % Compare current cell value to cell above
+        % If current value == above value, above cell = current cell, cont
+        if DP(curr_i, curr_w) == DP(curr_i - 1, curr_w)
+            curr_i = curr_i - 1;
+        % Else add i to OptimalList, subtract weight_i from w, decrement i
+        else
+            OptimalList = [OptimalList, curr_i - 1];
+            totalWeight = totalWeight + weights(curr_i - 1);
+            totalScore = totalScore + scores(curr_i - 1);
+
+            % Update remaining capacity & item #
+            curr_w = curr_w - weights(curr_i - 1);
+            curr_i = curr_i - 1;
+        end
+
+        % If curr_i = 1 or curr_w = 1,
+        if curr_i == 1 || curr_w == 1
+            break;
+        end
+        % break
+    end
+    % Print the Optimal list
+    for k = 1:numel(OptimalList)
+        fprintf("%d ", OptimalList(k));
+    end
+    
+    % Print total score and total weight
+    fprintf("\nTotal Weight: %d\n", totalWeight);
+    fprintf("Total Score After Backtracking: %d\n\n", totalScore);
+
+    % End of Andrew's code
+
     % Task 2.4 Enumerates every Distinct Optimal Selection 
     optimalSets = {};
 
     % Nested recursive helper function to trace back through table states
     % and handle ties 
+
 function backtrack(i, currentW, currentScore, currentItems)
 % Base Case: reached the top of the DP table (0 items remaining)
     if i == 0
