@@ -5,6 +5,10 @@
 
 function runExperiments()
 
+    % Set master seed for task 1.2
+    masterSeed = 3342;
+    rng(masterSeed, 'twister');
+
     % RunExperiments Master script to execute all tasks
     % 
     % Acts as the single entry oint to run correctness verification (Task
@@ -23,6 +27,12 @@ function runExperiments()
     % --- Sylvester Reyes 
 
     runTask1_1();
+
+    fprintf('\n-------------------------------------------------------------------\n\n');
+    
+    % ---- Task 1.2: Find an Effective Threshold ----
+    % --- Andrew Leurs
+    runTask1_2();
 
     fprintf('\n-------------------------------------------------------------------\n\n');
 
@@ -219,6 +229,90 @@ function runTask1_1()
 
 end
 
+% Task 1.2
+% Andrew Leurs
+% Generate Random Arrays with lengths n ∈ {1,000, 3,000, 6,000, 12,000}
+% Test K ∈ {0, 8, 16, 24, 32} using pivot rule median3
+% Test 3 Trials per size (Same array for each K)
+% record wall-clock sorting time in milliseconds, comparisons, and array writes
+% Mean time (ms), Std devation of time, mean comps, and mean writes
+% Time is calculated using built-in Matlab functions "tic" and "toc"
+% the "tic" and "toc" functions start a high resolution timer
+function runTask1_2()
+    disp("========== Task 1.2 ===========");
+    results = [];
+    array_lengths = [1000, 3000, 6000, 12000];
+    k_test_values = [0, 8, 16, 24, 32];
+    num_trials = 3;
+
+    for n = array_lengths
+        times = zeros(num_trials, length(k_test_values));
+        comparisons = zeros(num_trials, length(k_test_values));
+        writes = zeros(num_trials, length(k_test_values));
+        
+        for trial = 1:num_trials
+            test_array = randi([0, 100000], 1, n);
+            
+            for j = 1:length(k_test_values)
+                array_copy = test_array;
+
+                k = k_test_values(j);
+
+                tic;
+                [~, comps, writ] = QuickHybridSort(array_copy, k, 'median3');
+                elapsed_time = 1000 * toc;
+
+                times(trial, j) = elapsed_time;
+                comparisons(trial, j) = comps;
+                writes(trial, j) = writ;
+            end
+        end
+        mean_times = mean(times, 1);
+        std_times = std(times, 0, 1);
+        mean_comparisons = mean(comparisons, 1);
+        mean_writes = mean(writes, 1);
+        for j = 1:length(k_test_values)
+
+            results = [results;
+                n, k_test_values(j), mean_times(j), ...
+                std_times(j), mean_comparisons(j), mean_writes(j)];
+
+        end
+    end
+
+    results_table = array2table(results, ...
+        'VariableNames', {'ArraySize', 'K', 'MeanTime_ms', ...
+        'StdDevTime_ms', 'MeanComparisons', 'MeanWrites'});
+
+    comparison_table = results_table( ...
+        results_table.ArraySize == 6000, ...
+        {'K', 'MeanComparisons', 'MeanWrites'});
+
+    disp('Comparison and Write Counts for n = 6000:');
+    disp(comparison_table);
+
+    figure('name', 'Task 1.2: QuickHybridSort Mean Time vs Threshold');
+    hold on;
+
+    for n = array_lengths
+
+        % Get rows corresponding to the current array size
+        subset = results_table(results_table.ArraySize == n, :);
+
+        % Plot mean time with standard deviation error bars
+        errorbar(subset.K, subset.MeanTime_ms, ...
+            subset.StdDevTime_ms, '-o', ...
+            'DisplayName', sprintf('n = %d', n));
+
+    end
+
+    xlabel('Insertion Sort Threshold (K)');
+    ylabel('Mean Sorting Time (ms)');
+    title('QuickHybridSort: Mean Time vs. Threshold');
+    legend('Location', 'best');
+    grid on;
+    hold off;
+end
 
 function runTask1_3()
     % runTask1_3 Executes comparison performance for task 1.3
