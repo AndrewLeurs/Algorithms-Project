@@ -42,6 +42,12 @@ function runExperiments()
 
     fprintf('\n-------------------------------------------------------------------\n\n');
 
+    % ---- Task 1.4: Input Order and Interpretation ----
+    % --- Andrew Leurs
+    runTask1_4();
+
+    fprintf('\n-------------------------------------------------------------------\n\n');
+
     % ---- Part 2: Knapsack DP &  Optimal Enumeration ----
     % --- Sylvester Reyes
     disp('===       Executing Planet Zorb Knapsack Analysis      ===');
@@ -239,7 +245,7 @@ end
 % Time is calculated using built-in Matlab functions "tic" and "toc"
 % the "tic" and "toc" functions start a high resolution timer
 function runTask1_2()
-    disp("========== Task 1.2 ===========");
+    disp("========== Task 1.2 Find an effective threshold ===========");
     results = [];
     array_lengths = [1000, 3000, 6000, 12000];
     k_test_values = [0, 8, 16, 24, 32];
@@ -447,3 +453,45 @@ function runTask1_3()
     end
 end
 
+% Task 1.4 - Andrew Leurs
+% Created a descending and ascending array for both n = 3000 & n = 12000
+% Compares the avg time over 3 runs (ms), comparisons, and writes for QuickHybridSort using
+% K = 0, 16, and 32 (the best performing k from task 1.2)
+function runTask1_4()
+sizes  = [3000, 12000];
+orders = {"Ascending", "Descending"};
+
+rows = {};  % each row: n, order, K, avgTime_ms, comparisons, writes
+
+for s = 1:numel(sizes)
+    n = sizes(s);
+    k_values = [0, 16, 32];
+
+    for o = 1:numel(orders)
+        if o == 1
+            base = 0:n-1;          % ascending
+        else
+            base = n-1:-1:0;       % descending
+        end
+
+        for k = k_values
+            times = zeros(1, 3);
+
+            for r = 1:3
+                arr = base;        % fresh copy for every run
+                tic;
+                [~, comparisons, writes] = QuickHybridSort(arr, k, 'median3');
+                times(r) = toc * 1000;
+            end
+            % comparisons/writes are deterministic, so the last run's values are reported
+
+            rows(end+1, :) = {n, orders{o}, k, mean(times), comparisons, writes};
+        end
+    end
+end
+
+disp('========== Task 1.4 Input order and interpretation ===========');
+results = cell2table(rows, 'VariableNames', ...
+    {'n', 'Order', 'K', 'AvgTime_ms', 'Comparisons', 'Writes'});
+disp(results);
+end
