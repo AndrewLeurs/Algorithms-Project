@@ -100,65 +100,73 @@ function [maxScore, optimalSets] = knapsackDP()
     
     % Print total score and total weight
     fprintf("\nTotal Weight: %d\n", totalWeight);
-    fprintf("Total Score After Backtracking: %d\n\n", totalScore);
+    fprintf("Total Score After Backtracking: %d\n", totalScore);
 
     % End of Andrew's code
 
     % Task 2.4 Enumerates every Distinct Optimal Selection 
+    % Sylvester 
     optimalSets = {};
 
-    % Nested recursive helper function to trace back through table states
-    % and handle ties 
 
-function backtrack(i, currentW, currentScore, currentItems)
-% Base Case: reached the top of the DP table (0 items remaining)
-    if i == 0
-        % if accumulated score matches the global maximum score, record the
-        % item set 
-        if currentScore == maxScore
-            optimalSets{end + 1} = sort(currentItems);
-        end
-        return;
-    end
+    % initiates recursive backtracking from the bottom-right corner of the DP
+    % table 
 
-    currWeight = weights(i);
-    currScoreVal = scores(i);
-    cellVal = DP(i + 1, currentW + 1);
-
-    if cellVal == DP(i, currentW + 1)
-        backtrack(i - 1, currentW, currentScore, currentItems);
-    end
-    % Checks option B (take) when the item fits and preserves optimality
-    if currWeight <= currentW && cellVal == currScoreVal + DP(i, currentW - currWeight + 1)
-        backtrack(i - 1, currentW - currWeight, currentScore + currScoreVal, ...
-            [currentItems, i]);
-    end
-end
-
-% initiates recursive backtracking from the bottom-right corner of the DP
-% table 
-
-backtrack(n, W, 0, []);
-
-% filters out redundant duplicate set representations 
-if ~isempty(optimalSets)
-
-    % converts cell array of vectors to strings for filtering
-    strCells = cellfun(@(c) sprintf('%d', c), optimalSets, 'UniformOutput', false);
-    [~, uniqueIdx] = unique(strCells);
-    optimalSets = optimalSets(uniqueIdx);
+    optimalSets = backtrack(n, W, 0, [], optimalSets, weights, scores, DP, maxScore);
     
     disp('-----       Distinct Optimal Item Sets Found      -----');
+    fprintf('%-12s %-18s %-13s %-12s\n', 'SolutionID', 'ItemIDs', 'TotalWeight', 'TotalScore');
+    fprintf('%-12s %-18s %-13s %-12s\n', '-----------', '----------------------', '-------------', '-----------');
 
     % loops through and prints each distinct optimal selection, total
     % weights, and score 
     for idx = 1:length(optimalSets)
         itemIndices = optimalSets{idx}; % standard num
+        setStr = sprintf('[%s]', strjoin(string(itemIndices), ", "));
         setW = sum(weights(itemIndices));
-        fprintf('Solution %d --> Item IDs: [%s] | Total Weight: %d | Total Score: %d\n', ...
-            idx, num2str(itemIndices), setW, maxScore);
+        setScore = sum(scores(itemIndices));
+
+        % prints each row/column 
+        fprintf('%-12d %-18s %-13d %-12d\n', idx, setStr,  setW, setScore);
     end
-else
-    disp('No optimal sets found.');
 end
+
+
+% Nested Helper function required inorder to enumerate all solution sets 
+% backtrack is nested inside to try and find all solutions 
+% Second branch is not triggering during backtrack 
+% missing all possible solution sets 
+% determined there are two optimal sets 
+% set 1: [1, 3, 5, 6] 17 550
+% set 2: [2, 3, 4, 6] 17 550
+
+function setsOut = backtrack(i, currentW, currentScore, currentItems, setsIn, weights, scores, DP, maxScore)
+    % base cases for all itmes from 1 - n 
+    if i == 0
+        if currentScore == maxScore
+            setsIn{end + 1} = sort(currentItems);
+        end
+        setsOut = setsIn;
+        return;
+    end
+
+    setsOut = setsIn;
+    % weight of item i 
+    currWeight = weights(i);
+    % score of item i 
+    currScoreVal = scores(i);
+    % optimal DP score at item i with the +1 offset 
+    cellVal = DP(i + 1, currentW + 1);
+
+    % Branching factors 
+    % branch skips item i and explores the optimal DP value
+    if cellVal == DP(i, currentW + 1)
+        setsOut = backtrack(i - 1, currentW, currentScore, currentItems, setsOut, weights, scores, DP, maxScore);
+    end
+
+    % Branch 2 is independent if statement and tries to explort both paths 
+    if currWeight <= currentW && cellVal == (currScoreVal + DP(i, currentW - currWeight + 1))
+        setsOut = backtrack(i - 1, currentW - currWeight, currentScore + currScoreVal, ...
+            [currentItems, i], setsOut, weights, scores, DP, maxScore);
+    end
 end
